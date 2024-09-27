@@ -1,13 +1,9 @@
-from gpiozero import DigitalInputDevice
+from gpiozero import CPUTemperature, DigitalInputDevice
 from datetime import datetime, UTC
 from dataclasses import dataclass
-from service.application_services import BaseService, BaseInputCapture
+from service.application_services.base import BaseService, BaseInputCapture
 
-
-POWER_LED_PIN = 17
-POWER_BUTTON_PIN = 27
-RESET_BUTTON_PIN = 22
-GND_PIN = 6
+from service.const import POWER_BUTTON_PIN, POWER_LED_PIN
 
 
 @dataclass
@@ -19,8 +15,7 @@ class CPUStatus(BaseInputCapture):
         super().__init__()
 
     def update(self) -> None:
-        # self.temperature = CPUTemperature().temperature
-        self.temperature = 42.0
+        self.temperature = CPUTemperature().temperature
         self.last_update = datetime.now(tz=UTC)
         self.logger.info(f"Updated CPU temperature: {self.temperature}")
 
@@ -28,6 +23,7 @@ class CPUStatus(BaseInputCapture):
 @dataclass
 class RemoteComputerStatus(BaseInputCapture):
     power: bool | None = None
+    power_switch: bool | None = None
     last_update: datetime = datetime.now(tz=UTC)
 
     def __init__(self) -> None:
@@ -35,10 +31,15 @@ class RemoteComputerStatus(BaseInputCapture):
 
     def update(self) -> None:
         try:
-            # power_id: DigitalInputDevice = DigitalInputDevice(POWER_LED_PIN)
-            # self.power = bool(power_id.value)
-            # self.logger.info("Power value: %s", power_id.value)
-            self.power = True
+            power_id: DigitalInputDevice = DigitalInputDevice(POWER_LED_PIN)
+            power_switch_id: DigitalInputDevice = DigitalInputDevice(POWER_BUTTON_PIN)
+            
+            self.power = bool(power_id.value)
+            self.power_switch = bool(power_switch_id.value)
+            
+            self.logger.info("Power value: %s", power_id.value)
+            self.logger.info("Power switch value: %s", power_switch_id.value)
+
             self.last_update = datetime.now(tz=UTC)
             self.logger.info(f"Updated power status: {self.power}")
         except Exception as exc:

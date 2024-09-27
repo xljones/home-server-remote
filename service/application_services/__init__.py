@@ -1,16 +1,8 @@
-from abc import ABC, abstractmethod
-from flask import current_app
+from service.application_services.status_service import StatusService
+from service.application_services.power_service import PowerService
 
+def get_status_service() -> StatusService:
+    return StatusService()
 
-class BaseService(ABC):
-    def __init__(self) -> None:
-        self.logger = current_app.logger
-
-
-class BaseInputCapture(BaseService, ABC):
-    def __init__(self) -> None:
-        super().__init__()
-
-    @abstractmethod
-    def update(self) -> None:
-        pass
+def get_power_service() -> PowerService:
+    return PowerService()

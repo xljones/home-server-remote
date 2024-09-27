@@ -1,5 +1,7 @@
 from flask import Blueprint, render_template, jsonify, Response
 from service.application_services.status_service import StatusService
+from datetime import datetime, UTC
+import os
 
 bp = Blueprint("main", __name__, url_prefix="")
 
@@ -11,6 +13,10 @@ def home() -> str:
 
     return render_template(
         "index.html",
+        server={
+            "datetime": datetime.now(tz=UTC),
+            "GPIOZERO_PIN_FACTORY": os.environ.get("GPIOZERO_PIN_FACTORY", "not set"),
+        },
         status=status,
     )
 

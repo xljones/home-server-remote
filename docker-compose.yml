@@ -14,6 +14,7 @@ services:
       - 8000:8000
     environment:
       - FLASK_ENV=dev
+      - GPIOZERO_PIN_FACTORY=mock
     volumes:
       - ./:/app
     command: gunicorn -c /app/config/gunicorn/dev.py service.app:flask_app
@@ -34,6 +35,7 @@ services:
       - 80:5656
     environment:
       - FLASK_ENV=prod
+      - GPIOZERO_PIN_FACTORY=native
     volumes:
       - ./:/app
     command: gunicorn -c /app/config/gunicorn/production.py service.app:flask_app

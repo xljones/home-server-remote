@@ -1,10 +1,23 @@
 <html>
 	<body>
-		<h1>Service</h1>
-		<p>Service is running...</p>
+		<h1>Ziggy</h1>
+		<hr/>
 
-		{% for k, v in status.items() %}
-		<p>{{k}} -- {{v}}</p>
+		<h2>Server</h2>
+		{% for k,v in server.items() %}
+			<p><b>{{k}}</b>: {{v}}</p>
 		{% endfor %}
+		<hr/>
+
+		<h2>Status</h2>
+		<h3>CPU Temperature</h3>
+		<p>{{status.cpu.temperature}}°C, last updated: {{status.cpu.last_update}}</p>
+		<h3>Remote computer power status</h3>
+		<p>{{status.rcs.power}}, last updated: {{status.rcs.last_update}}</p>
+
+		<hr />
+		<h2>Remote computer control</h2>
+		<button onclick="location.href='/power/on';">Power on</button>
+		<button onclick="location.href='/power/off';">Power off</button>
 	</body>
 </html>
