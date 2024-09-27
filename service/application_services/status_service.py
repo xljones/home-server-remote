@@ -1,65 +1,50 @@
-from gpiozero import CPUTemperature, DigitalInputDevice
+from gpiozero import CPUTemperature, DigitalInputDevice, DigitalOutputDevice
 from datetime import datetime, UTC
 from dataclasses import dataclass
-from service.application_services.base import BaseService, BaseInputCapture
-
-from service.const import POWER_BUTTON_PIN, POWER_LED_PIN
+from service.application_services.base import BaseService
 
 
 @dataclass
-class CPUStatus(BaseInputCapture):
-    temperature: float | None = None
+class HostStatus:
+    temperature: float
     last_update: datetime = datetime.now(tz=UTC)
-
-    def __init__(self) -> None:
-        super().__init__()
-
-    def update(self) -> None:
-        self.temperature = CPUTemperature().temperature
-        self.last_update = datetime.now(tz=UTC)
-        self.logger.info(f"Updated CPU temperature: {self.temperature}")
 
 
 @dataclass
-class RemoteComputerStatus(BaseInputCapture):
-    power: bool | None = None
-    power_switch: bool | None = None
+class RemoteStatus():
+    power: bool
+    power_button: bool
     last_update: datetime = datetime.now(tz=UTC)
-
-    def __init__(self) -> None:
-        super().__init__()
-
-    def update(self) -> None:
-        try:
-            power_id: DigitalInputDevice = DigitalInputDevice(POWER_LED_PIN)
-            power_switch_id: DigitalInputDevice = DigitalInputDevice(POWER_BUTTON_PIN)
-            
-            self.power = bool(power_id.value)
-            self.power_switch = bool(power_switch_id.value)
-            
-            self.logger.info("Power value: %s", power_id.value)
-            self.logger.info("Power switch value: %s", power_switch_id.value)
-
-            self.last_update = datetime.now(tz=UTC)
-            self.logger.info(f"Updated power status: {self.power}")
-        except Exception as exc:
-            self.logger.info(f"Error updating power status: {exc}")
 
 
 class StatusService(BaseService):
-    def __init__(self) -> None:
+    host_status: HostStatus
+    remote_status: RemoteStatus
+
+    def __init__(
+        self,
+        power_led_device: DigitalInputDevice,
+        power_button_device: DigitalOutputDevice,
+    ) -> None:
         super().__init__()
-        self.cpu: CPUStatus = CPUStatus()
-        self.rcs: RemoteComputerStatus = RemoteComputerStatus()
+        self._power_led_device = power_led_device
+        self._power_button_device = power_button_device
 
     def get_status(self) -> dict:
         try:
-            self.cpu.update()
-            self.rcs.update()
+            self.logger.info(f"power_led_device  = {self._power_led_device}")
+            self.logger.info(f"power_button_device  = {self._power_button_device}")
+            self.host_status = HostStatus(
+                temperature=CPUTemperature().temperature
+            )
+            self.remote_status = RemoteStatus(
+                power=bool(self._power_led_device.value),
+                power_button=bool(self._power_button_device.value),
+            )
         except Exception as exc:
             self.logger.info(f"Error updating status: {exc}")
 
         return {
-            "cpu": self.cpu.__dict__,
-            "rcs": self.rcs.__dict__,
+            "host": self.host_status.__dict__,
+            "remote": self.remote_status.__dict__,
         }
