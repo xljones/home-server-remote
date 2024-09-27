@@ -33,15 +33,17 @@
 								<p><b>CPU Temperature</b> {{status.host.temperature}}°C</p>
 						
 								<h3>Remote computer power status</h3>
-								<p>Power LED = {{status.remote.power}}</p>
-								<p>Power btn = {{status.remote.power_button}}</p>
+								<p>Power = {{status.remote.power}} {{ "✅" if status.remote.power else "🛑" }}</p>
+								<p>Button = {{status.remote.power_button}} {{ "✅" if status.remote.power_button else "🛑" }}</p>
 								<p>last updated: {{status.remote.last_update}}</p>
 							</div>
 						</div>
 						<nav>
 							<ul>
-								<li><a href="/power/on">Power on</a></li>
-								<li><a href="/power/off">power off</a></li>
+								<li><a href="/power/on">on</a></li>
+								<li><a href="#"></a></li>
+								<li><a href="#"></a></li>
+								<li><a href="/power/off">off</a></li>
 							</ul>
 						</nav>
 					</header>
