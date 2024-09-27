@@ -17,6 +17,7 @@ def get_status_service(
         power_button_device=power_button_device or POWER_BUTTON_DEVICE,
     )
 
+
 def get_power_service(
     power_button_device: DigitalOutputDevice | None = None,
 ) -> PowerService:

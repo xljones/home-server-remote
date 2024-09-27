@@ -11,7 +11,7 @@ class HostStatus:
 
 
 @dataclass
-class RemoteStatus():
+class RemoteStatus:
     power: bool | None
     power_button: bool | None
     last_update: datetime = datetime.now(tz=UTC)
@@ -45,7 +45,7 @@ class StatusService(BaseService):
     def _get_host_status(self) -> HostStatus:
         try:
             host_status = HostStatus(
-                temperature=CPUTemperature().temperature
+                temperature=CPUTemperature().temperature,
             )
         except Exception as exc:
             self.logger.error(f"Error getting host status: {exc}")
