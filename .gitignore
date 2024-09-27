@@ -1,0 +1,20 @@
+# secrets & stores
+.secrets
+data
+
+# metadata
+.DS_Store
+
+# caches
+__pycache__
+.mypy_cache
+.pytest_cache
+
+# logs
+duck.log
+
+# dev
+venv
+.coverage
+.python-version
+htmlcov

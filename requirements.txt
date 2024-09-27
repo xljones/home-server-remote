@@ -1,0 +1,13 @@
+Flask
+requests
+gunicorn
+
+# dev
+responses
+ruff
+mypy
+pytest
+pytest-cov
+
+# types
+types-request

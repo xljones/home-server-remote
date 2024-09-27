@@ -1,0 +1,41 @@
+name: CI
+
+on: [push]
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    strategy:
+      matrix:
+        python-version: ["3.12"]
+    steps:
+    - name: Checkout repo
+      uses: actions/checkout@v4
+
+    - name: Set up Python ${{ matrix.python-version }}
+      uses: actions/setup-python@v4
+      with:
+        python-version: ${{ matrix.python-version }}
+
+    - name: Install dependencies
+      working-directory: .
+      run: |
+        python -m pip install --upgrade pip
+        python -m pip install -r requirements.txt
+
+    - name: Analysing the code with ruff
+      working-directory: .
+      run : |
+        python -m ruff --check service
+    - name: Analaysing codebase with mypy
+      working-directory: .
+      run : |
+        python -m mypy --check service
+    - name: Running test suite
+      working-directory: .
+      env:
+        FLASK_ENV: test
+      run: |
+        python -m pytest service/tests
+
+      if: always()

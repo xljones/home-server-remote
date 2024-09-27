@@ -1,0 +1,40 @@
+services:
+  base-image:
+    image: home-frontend/base-image
+    build:
+      context: ./
+      dockerfile: Dockerfile
+    volumes:
+      - ./:/app
+
+  dev:
+    container_name: home-frontend-dev
+    image: home-frontend/base-image
+    ports:
+      - 8000:8000
+    environment:
+      - FLASK_ENV=dev
+    volumes:
+      - ./:/app
+    command: gunicorn -c /app/config/gunicorn/dev.py service.app:flask_app
+    restart: unless-stopped
+
+  test:
+    image: home-frontend/base-image
+    container_name: test
+    environment:
+      - FLASK_ENV=test
+    volumes:
+      - ./:/app
+
+  prod:
+    container_name: home-frontend-prod
+    image: home-frontend/base-image
+    ports:
+      - 80:5656
+    environment:
+      - FLASK_ENV=prod
+    volumes:
+      - ./:/app
+    command: gunicorn -c /app/config/gunicorn/production.py service.app:flask_app
+    restart: unless-stopped
