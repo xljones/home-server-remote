@@ -21,7 +21,7 @@ test: static-tests pytest
 .PHONY: static-tests
 static-tests:
 	docker compose run --rm --no-deps base-image sh -c '\
-		python -m ruff service && \
+		python -m ruff check service && \
 		python -m mypy service'
 
 .PHONY: pytest
