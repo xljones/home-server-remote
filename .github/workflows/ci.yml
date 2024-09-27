@@ -26,7 +26,7 @@ jobs:
     - name: Analysing the code with ruff
       working-directory: .
       run : |
-        python -m ruff --check service
+        python -m ruff check service
     - name: Analaysing codebase with mypy
       working-directory: .
       run : |
