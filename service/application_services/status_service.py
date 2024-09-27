@@ -6,14 +6,14 @@ from service.application_services.base import BaseService
 
 @dataclass
 class HostStatus:
-    temperature: float
+    temperature: float | None
     last_update: datetime = datetime.now(tz=UTC)
 
 
 @dataclass
 class RemoteStatus():
-    power: bool
-    power_button: bool
+    power: bool | None
+    power_button: bool | None
     last_update: datetime = datetime.now(tz=UTC)
 
 
@@ -32,15 +32,8 @@ class StatusService(BaseService):
 
     def get_status(self) -> dict:
         try:
-            self.logger.info(f"power_led_device  = {self._power_led_device}")
-            self.logger.info(f"power_button_device  = {self._power_button_device}")
-            self.host_status = HostStatus(
-                temperature=CPUTemperature().temperature
-            )
-            self.remote_status = RemoteStatus(
-                power=bool(self._power_led_device.value),
-                power_button=bool(self._power_button_device.value),
-            )
+            self.host_status = self._get_host_status()
+            self.remote_status = self._get_remote_status()
         except Exception as exc:
             self.logger.info(f"Error updating status: {exc}")
 
@@ -48,3 +41,24 @@ class StatusService(BaseService):
             "host": self.host_status.__dict__,
             "remote": self.remote_status.__dict__,
         }
+
+    def _get_host_status(self) -> HostStatus:
+        try:
+            host_status = HostStatus(
+                temperature=CPUTemperature().temperature
+            )
+        except Exception as exc:
+            self.logger.error(f"Error getting host status: {exc}")
+            host_status = HostStatus(temperature=None)
+        return host_status
+
+    def _get_remote_status(self) -> RemoteStatus:
+        try:
+            remote_status = RemoteStatus(
+                power=bool(self._power_led_device.value),
+                power_button=bool(self._power_button_device.value),
+            )
+        except Exception as exc:
+            self.logger.error(f"Error getting remote status: {exc}")
+            remote_status = RemoteStatus(power=None, power_button=None)
+        return remote_status
