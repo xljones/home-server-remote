@@ -1,6 +1,7 @@
 Flask
 requests
 gunicorn
+gpiozero
 
 # dev
 responses

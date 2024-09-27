@@ -32,9 +32,7 @@ class HomeServerRemote:
             )
         )
         if not os.path.exists(config_file):
-            raise FileNotFoundError(
-                f"Configuration file {config_file} not found."
-            )
+            raise FileNotFoundError(f"Configuration file {config_file} not found.")
         self.logger.info(f"Loading configuration from {config_file}")
         self.flask_app.config.from_pyfile(str(config_file))
 

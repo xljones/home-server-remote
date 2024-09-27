@@ -2,5 +2,9 @@
 	<body>
 		<h1>Service</h1>
 		<p>Service is running...</p>
+
+		{% for k, v in status.items() %}
+		<p>{{k}} -- {{v}}</p>
+		{% endfor %}
 	</body>
 </html>
