@@ -2,9 +2,13 @@
 build:
 	docker compose build --no-cache
 
-.PHONY: run
-run: 
+.PHONY: run-dev
+run-dev: 
 	docker compose up --force-recreate dev
+
+.PHONY: run-prod
+run-prod:
+	docker compose up --force-recreate prod
 
 .PHONY: format
 format:

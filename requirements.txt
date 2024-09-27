@@ -8,6 +8,3 @@ ruff
 mypy
 pytest
 pytest-cov
-
-# types
-types-request

@@ -1,6 +1,6 @@
 services:
   base-image:
-    image: home-frontend/base-image
+    image: home-server-remote/base-image
     build:
       context: ./
       dockerfile: Dockerfile
@@ -8,8 +8,8 @@ services:
       - ./:/app
 
   dev:
-    container_name: home-frontend-dev
-    image: home-frontend/base-image
+    container_name: home-server-remote-dev
+    image: home-server-remote/base-image
     ports:
       - 8000:8000
     environment:
@@ -20,7 +20,7 @@ services:
     restart: unless-stopped
 
   test:
-    image: home-frontend/base-image
+    image: home-server-remote/base-image
     container_name: test
     environment:
       - FLASK_ENV=test
@@ -28,8 +28,8 @@ services:
       - ./:/app
 
   prod:
-    container_name: home-frontend-prod
-    image: home-frontend/base-image
+    container_name: home-server-remote-prod
+    image: home-server-remote/base-image
     ports:
       - 80:5656
     environment:
